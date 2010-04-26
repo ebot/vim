@@ -1,0 +1,54 @@
+# Function
+snippet fun
+	Function ${1:function_name} (${2:argument})
+		${3:' body...}
+	End Function
+# Sub
+snippet sub
+	Sub ${1:sub_name} (${2:argument})
+		${3:' body...}
+	End Sub
+# Private Sub
+snippet psub
+	Private Sub ${1:sub_name} (${2:argument})
+		${3:' body...}
+	End Sub
+# if
+snippet if
+	If ${1:true} Then
+		${2}
+	End If
+# if ... else
+snippet ife
+	If ${1:true} Then
+		${2}
+	Else
+		${3}
+	End
+# case
+snippet case
+	Select Case ${1:case}
+		${2:' code}
+	End Select
+	${3}
+# for (...) {...}
+snippet for
+	For ${1:condition}
+		${2:' code}
+	Next
+# while 
+snippet wh
+	While ${1:condition}
+		${2:' code}
+	Wend
+# do...while
+snippet do
+	Do While ${1:condition}
+		${2:' code}
+	Loop
+# do...until
+snippet dou
+	Do Until ${1:condition}
+		${2:'code}
+	Loop
+
