@@ -1,7 +1,15 @@
 set nocompatible
-source $VIMRUNTIME/vimrc_example.vim
-source $VIMRUNTIME/mswin.vim
-behave mswin
+if has("gui_macvim")
+  let macvim_hig_shift_movement = 1
+  set backupdir=~/.vim/backups " Where backups will go.
+  set directory=~/.vim/tmp     " Where temporary files will go.
+else
+  source $VIMRUNTIME/vimrc_example.vim
+  source $VIMRUNTIME/mswin.vim
+  behave mswin
+  set backupdir=~/vimfiles/backups " Where backups will go.
+  set directory=~/vimfiles/tmp     " Where temporary files will go.
+endif
 
 set diffexpr=MyDiff()
 function MyDiff()
@@ -41,9 +49,6 @@ set autoindent
 
 " Backups & Files
 set backup                     " Enable creation of backup file.
-set backupdir=~/vimfiles/backups " Where backups will go.
-set directory=~/vimfiles/tmp     " Where temporary files will go.
-
 
 autocmd VimEnter * exe 'NERDTree'
 autocmd VimEnter * wincmd p
