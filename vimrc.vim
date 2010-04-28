@@ -1,4 +1,6 @@
 set nocompatible
+
+" Backup & File Settings
 if has("gui_macvim")
   let macvim_hig_shift_movement = 1
   set backupdir=~/.vim/backups " Where backups will go.
@@ -10,7 +12,40 @@ else
   set backupdir=~/vimfiles/backups " Where backups will go.
   set directory=~/vimfiles/tmp     " Where temporary files will go.
 endif
+set backup                     " Enable creation of backup files
 
+" Load the NerdTree project drawer by default
+autocmd VimEnter * exe 'NERDTree'
+autocmd VimEnter * wincmd p
+
+" Color, text, and display settings
+colorscheme wombat
+set guioptions-=T  "remove toolbar
+set guifont=Bitstream_Vera_Sans_Mono
+set wrap!
+set nu
+set expandtab
+set softtabstop=2
+set shiftwidth=2
+set tabstop=2
+set expandtab
+set smarttab
+set autoindent
+autocmd FileType text setlocal textwidth=78
+if has("gui_running")
+  set lines=40 columns=150
+  :winpos 175 1
+else
+  "This is console Vim.
+  if exists("+lines")
+    set lines=35
+  endif
+  if exists("+columns")
+    set columns=110
+  endif
+endif
+
+" Set the diff expression
 set diffexpr=MyDiff()
 function MyDiff()
   let opt = '-a --binary '
@@ -35,38 +70,3 @@ function MyDiff()
   endif
   silent execute '!' . cmd . ' ' . opt . arg1 . ' ' . arg2 . ' > ' . arg3 . eq
 endfunction
-
-" My customizations
-set wrap!
-set nu
-set expandtab
-set softtabstop=2
-set shiftwidth=2
-set tabstop=2
-set expandtab
-set smarttab
-set autoindent
-
-" Backups & Files
-set backup                     " Enable creation of backup file.
-
-autocmd VimEnter * exe 'NERDTree'
-autocmd VimEnter * wincmd p
-
-set guioptions-=T  "remove toolbar
-
-colorscheme wombat
-set guifont=Bitstream_Vera_Sans_Mono
-
-if has("gui_running")
-  set lines=40 columns=150
-  :winpos 175 1
-else
-  "This is console Vim.
-  if exists("+lines")
-    set lines=35
-  endif
-  if exists("+columns")
-    set columns=110
-  endif
-endif
