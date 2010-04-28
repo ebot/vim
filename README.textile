@@ -1,0 +1,7 @@
+h1. My vi Setup
+
+This repo contains my default vi setup for use on both Windows and the mac.
+
+h2. Post Clone Setup
+
+Remember to create the backups and tmp dir after you have cloned the repo.
