@@ -17,6 +17,7 @@ set backup                     " Enable creation of backup files
 " Load the NerdTree project drawer by default
 autocmd VimEnter * exe 'NERDTree'
 autocmd VimEnter * wincmd p
+let NERDTreeShowBookmarks=1
 
 " Color, text, and display settings
 colorscheme wombat
