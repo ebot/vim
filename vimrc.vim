@@ -3,6 +3,8 @@ if has("gui_macvim")
   let macvim_hig_shift_movement = 1
   set backupdir=~/.vim/backups " Where backups will go.
   set directory=~/.vim/tmp     " Where temporary files will go.
+  set transparency=5           " Set transparency
+  set guioptions=aAce          " Make sure experimental mode is on in the MacVim Advanced options.
 else
   source $VIMRUNTIME/vimrc_example.vim
   source $VIMRUNTIME/mswin.vim
