@@ -7,7 +7,7 @@ if has("gui_macvim")
   set directory=~/.vim/tmp     " Where temporary files will go.
   set transparency=5           " Set transparency
   set guioptions=aAce          " Make sure experimental mode is on in the MacVim Advanced options.
-else
+elseif has("win32")
   source $VIMRUNTIME/vimrc_example.vim
   source $VIMRUNTIME/mswin.vim
   behave mswin
@@ -34,7 +34,7 @@ set guioptions-=T  "remove toolbar
 set guifont=Bitstream_Vera_Sans_Mono
 set wrap!
 set nu
-set expandtab
+"set expandtab
 set softtabstop=2
 set shiftwidth=2
 set tabstop=2
