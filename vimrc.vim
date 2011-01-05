@@ -16,11 +16,6 @@ else
 endif
 set backup                     " Enable creation of backup files
 
-" Load the NerdTree project drawer by default
-autocmd VimEnter * exe 'NERDTree'
-autocmd VimEnter * wincmd p
-let NERDTreeShowBookmarks=1
-
 " Supertab ruby settings
 autocmd FileType ruby,eruby set omnifunc=rubycomplete#Complete
 autocmd FileType ruby,eruby let g:rubycomplete_buffer_loading = 1
@@ -29,6 +24,9 @@ autocmd FileType ruby,eruby let g:rubycomplete_classes_in_global = 1
 "improve autocomplete menu color
 highlight Pmenu ctermbg=238 gui=bold
 
+" NERDTree Project Drawer Settings
+let NERDTreeShowBookmarks=1
+autocmd WinEnter * call s:CloseIfOnlyNerdTreeLeft()
 
 " Color, text, and display settings
 colorscheme wombat
@@ -47,6 +45,8 @@ autocmd FileType text setlocal textwidth=78
 if has("gui_running")
   set lines=40 columns=150
   :winpos 175 1
+  " Load the NerdTree project drawer by default for guis only
+  autocmd VimEnter * call s:CdIfDirectory(expand("<amatch>"))
 else
   "This is console Vim.
   if exists("+lines")
@@ -57,28 +57,36 @@ else
   endif
 endif
 
-" Set the diff expression
-set diffexpr=MyDiff()
-function MyDiff()
-  let opt = '-a --binary '
-  if &diffopt =~ 'icase' | let opt = opt . '-i ' | endif
-  if &diffopt =~ 'iwhite' | let opt = opt . '-b ' | endif
-  let arg1 = v:fname_in
-  if arg1 =~ ' ' | let arg1 = '"' . arg1 . '"' | endif
-  let arg2 = v:fname_new
-  if arg2 =~ ' ' | let arg2 = '"' . arg2 . '"' | endif
-  let arg3 = v:fname_out
-  if arg3 =~ ' ' | let arg3 = '"' . arg3 . '"' | endif
-  let eq = ''
-  if $VIMRUNTIME =~ ' '
-    if &sh =~ '\<cmd'
-      let cmd = '""' . $VIMRUNTIME . '\diff"'
-      let eq = '"'
-    else
-      let cmd = substitute($VIMRUNTIME, ' ', '" ', '') . '\diff"'
+" NerdTree Functions from Carl and Yehuda's vim distr - https://github.com/carlhuda/janus
+
+" Close all open buffers on entering a window if the only
+" buffer that's left is the NERDTree buffer
+function s:CloseIfOnlyNerdTreeLeft()
+  if exists("t:NERDTreeBufName")
+    if bufwinnr(t:NERDTreeBufName) != -1
+      if winnr("$") == 1
+        q
+      endif
     endif
-  else
-    let cmd = $VIMRUNTIME . '\diff'
   endif
-  silent execute '!' . cmd . ' ' . opt . arg1 . ' ' . arg2 . ' > ' . arg3 . eq
+endfunction
+
+" If the parameter is a directory, cd into it
+function s:CdIfDirectory(directory)
+  let explicitDirectory = isdirectory(a:directory)
+  let directory = explicitDirectory || empty(a:directory)
+
+  if explicitDirectory
+    exe "cd " . a:directory
+  endif
+
+  if directory
+    NERDTree
+    wincmd p
+    bd
+  endif
+
+  if explicitDirectory
+    wincmd p
+  endif
 endfunction
