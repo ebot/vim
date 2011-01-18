@@ -9,8 +9,8 @@ if has("gui_macvim")
   set guioptions=aAce          " Make sure experimental mode is on in the MacVim Advanced options.
 elseif has("win32")
   source $VIMRUNTIME/vimrc_example.vim
-  source $VIMRUNTIME/mswin.vim
-  behave mswin
+  "source $VIMRUNTIME/mswin.vim
+  "behave mswin
   set backupdir=~/vimfiles/backups " Where backups will go.
   set directory=~/vimfiles/tmp     " Where temporary files will go.
 endif
