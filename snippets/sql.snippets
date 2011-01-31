@@ -1,0 +1,65 @@
+snippet ssby
+	SELECT YEAR(ModifyDateTime) as document_year,
+				 COUNT(TotalKB) as document_count, 
+				 (SUM(TotalKB)/1024)/1024 as document_size_gb
+	FROM Documents as d
+ 		INNER JOIN DocTypes as dt ON d.DocType = dt.DocType 
+		INNER JOIN DocArchStg as das ON d.DocID = das.Docid
+	GROUP BY YEAR(ModifyDateTime) WITH ROLLUP
+
+snippet sed
+	SELECT MedRecNo, EncounterNo, EncntrStartDate, OrgShortName, OrgUniqueExtId
+	FROM Documents as d
+		INNER JOIN DocsOwners as do ON d.DocId = do.DocId
+		INNER JOIN Encounters as e ON do.OwnerId = e.EncntrOwnerId
+		INNER JOIN MedicalRecords as mr ON e.MedRecOwnerId = mr.MedRecOwnerId
+		INNER JOIN Organizations as own ON mr.OrgOwnerId =  own.OrgOwnerId
+	GROUP BY MedRecNo, EncounterNo, EncntrStartDate, OrgShortName, OrgUniqueExtId
+
+snippet sdl
+	/**
+		* The location is as follows:
+		* \\\\DeviceUNC\6th Character of the DocID\7th Character of the DocID\DocID + PhysicalObjNum
+		**/
+
+	SELECT DeviceUNC, Objects.DocID, PhysicalObjNum, FileExtension 
+		FROM dbo.Documents 
+			INNER JOIN dbo.DocArchStg ON dbo.Documents.DocId = dbo.DocArchStg.DocId 
+			INNER JOIN dbo.Devices ON dbo.Devices.DeviceNum = dbo.DocArchStg.DeviceNum 
+			INNER JOIN dbo.MagDevices ON dbo.Devices.DeviceNum = dbo.MagDevices.DeviceNum 
+			INNER JOIN dbo.DocTypes ON dbo.Documents.DocType = dbo.DocTypes.DocType 
+			INNER JOIN Objects ON dbo.Documents.DocId = dbo.Objects.DocId 
+			INNER JOIN FileFormats ON objects.FileFmtID = FileFormats.FileFmtID
+	WHERE DocTypeName IN ('${1}'${2})
+	${3}
+
+snippet sdc
+	SELECT DocTypeName, COUNT(DocTypeName) as NumberOfDocuments, 
+				 MIN(ModifyDateTime) as FirstOccurrence, 
+				 MAX(ModifyDateTime) as LastOccurrence 
+	FROM dbo.Documents 
+		INNER JOIN dbo.DocTypes ON dbo.Documents.DocType = dbo.DocTypes.DocType 
+	WHERE DocTypeName in ('${1}'${2}) 
+	GROUP BY DocTypeName
+	${3}
+
+snippet do
+	INNER JOIN DocsOwners AS do ON d.DocId = do.DocId
+
+snippet dt
+	INNER JOIN DocTypes AS dt ON d.DOcType = dt.DocType
+
+snippet e
+	INNER JOIN Encounters AS e ON do.OwnerId = e.EncntrOwnerId
+
+snippet ff
+	INNER JOIN FileFormats AS ff ON obj.FileFmtId = ff.FileFmtId
+
+snippet mr
+	INNER JOIN MedicalRecords AS mr ON e.MedRecOwnerId = mr.MedRecOwnerId
+
+snippet obj
+	INNER JOIN objects AS obj ON d.DocId = obj.DoctId
+
+snippet org
+	INNER JOIN Organizations as org ON mr.OrgOwnerId = org.OrgOwnerId
