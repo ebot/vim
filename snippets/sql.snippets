@@ -59,7 +59,7 @@ snippet mr
 	INNER JOIN MedicalRecords AS mr ON e.MedRecOwnerId = mr.MedRecOwnerId
 
 snippet obj
-	INNER JOIN objects AS obj ON d.DocId = obj.DoctId
+	INNER JOIN objects AS obj ON d.DocId = obj.DocId
 
 snippet org
 	INNER JOIN Organizations as org ON mr.OrgOwnerId = org.OrgOwnerId
