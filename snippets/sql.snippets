@@ -3,7 +3,7 @@ snippet ssby
 				 COUNT(TotalKB) as document_count, 
 				 (SUM(TotalKB)/1024)/1024 as document_size_gb
 	FROM Documents as d
- 		INNER JOIN DocTypes as dt ON d.DocType = dt.DocType 
+		INNER JOIN DocTypes as dt ON d.DocType = dt.DocType 
 		INNER JOIN DocArchStg as das ON d.DocID = das.Docid
 	GROUP BY YEAR(ModifyDateTime) WITH ROLLUP
 

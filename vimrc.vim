@@ -16,6 +16,11 @@ elseif has("win32")
 endif
 set backup                     " Enable creation of backup files
 
+" Add Pathogen Support
+filetype off
+call pathogen#runtime_append_all_bundles()
+filetype on
+
 " Supertab ruby settings
 autocmd FileType ruby,eruby set omnifunc=rubycomplete#Complete
 autocmd FileType ruby,eruby let g:rubycomplete_buffer_loading = 1
