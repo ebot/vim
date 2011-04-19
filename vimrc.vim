@@ -34,7 +34,8 @@ let NERDTreeShowBookmarks=1
 autocmd WinEnter * call s:CloseIfOnlyNerdTreeLeft()
 
 " Color, text, and display settings
-colorscheme wombat
+" colorscheme wombat
+colorscheme solarized
 set guioptions-=T  "remove toolbar
 set guifont=Bitstream_Vera_Sans_Mono
 set wrap!
