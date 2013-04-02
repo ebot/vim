@@ -1,10 +1,10 @@
 snippet ssby
-	SELECT YEAR(ModifyDateTime) as document_year,
-				 COUNT(TotalKB) as document_count, 
-				 (SUM(TotalKB)/1024)/1024 as document_size_gb
-	FROM Documents as d
-		INNER JOIN DocTypes as dt ON d.DocType = dt.DocType 
-		INNER JOIN DocArchStg as das ON d.DocID = das.Docid
+	SELECT YEAR(ModifyDateTime) AS document_year,
+	       CAST(COUNT(TotalKB) AS BigInt) AS document_count, 
+	       (SUM( CAST(TotalKB AS BigInt) ) / 1024) /1024 AS document_size_gb
+	FROM Documents AS d
+	  INNER JOIN DocTypes AS dt ON d.DocType = dt.DocType 
+	  INNER JOIN DocArchStg AS dAS ON d.DocID = dAS.Docid
 	GROUP BY YEAR(ModifyDateTime) WITH ROLLUP
 
 snippet sed
