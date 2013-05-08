@@ -37,7 +37,7 @@ autocmd WinEnter * call s:CloseIfOnlyNerdTreeLeft()
 " colorscheme wombat
 colorscheme solarized
 set guioptions-=T  "remove toolbar
-set guifont=Bitstream_Vera_Sans_Mono
+set guifont=Bitstream_Vera_Sans_Mono:h10:cDEFAULT "Bitstream\ Vera\ Sans\ Mono\ s10
 set wrap!
 set nu
 "set expandtab
@@ -49,7 +49,7 @@ set smarttab
 set autoindent
 autocmd FileType text setlocal textwidth=78
 if has("gui_running")
-  set lines=40 columns=150
+  set lines=50 columns=180
   :winpos 175 1
   " Load the NerdTree project drawer by default for guis only
   autocmd VimEnter * call s:CdIfDirectory(expand("<amatch>"))
