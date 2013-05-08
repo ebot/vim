@@ -33,6 +33,12 @@ highlight Pmenu ctermbg=238 gui=bold
 let NERDTreeShowBookmarks=1
 autocmd WinEnter * call s:CloseIfOnlyNerdTreeLeft()
 
+" Set up default macros
+let @a='Gdd:%s/^.*=> //g
+:%s/\n/'', ''/g
+i''€@7€kb€kb€kb'
+let @b='Gdd€kh€kr€kr€krgg€kr€kr€kr€kr€kr€kr€kr€kr€kr€kr€kr€krd€kr€kr€kr€kr€kr€kr€kr€kr€kr€kr€kr€kr€kr€kr€kr€kr€kr€kr€kr€kr€kr€kr€kr€kr€kr€kr€kr€kr€kr€kr€kr€kr€kr€kr€kr€krG€@7d:$€kb%s/\n/'', ''/g
+i''€@7€kb€kb€kb'
 " Color, text, and display settings
 " colorscheme wombat
 colorscheme solarized
