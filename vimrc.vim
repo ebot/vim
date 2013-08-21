@@ -39,6 +39,10 @@ let @a='Gdd:%s/^.*=> //g
 i''€@7€kb€kb€kb'
 let @b='Gdd€kh€kr€kr€krgg€kr€kr€kr€kr€kr€kr€kr€kr€kr€kr€kr€krd€kr€kr€kr€kr€kr€kr€kr€kr€kr€kr€kr€kr€kr€kr€kr€kr€kr€kr€kr€kr€kr€kr€kr€kr€kr€kr€kr€kr€kr€kr€kr€kr€kr€kr€kr€krG€@7d:$€kb%s/\n/'', ''/g
 i''€@7€kb€kb€kb'
+let @c=':%s/^  \d* - //g
+:%s/ - .*\n/'', ''/g
+i''€@7€kb€kb€kb'
+
 " Color, text, and display settings
 " colorscheme wombat
 colorscheme solarized
