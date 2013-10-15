@@ -43,6 +43,85 @@ snippet sdc
 	GROUP BY DocTypeName
 	${3}
 
+snippet dd
+	SELECT Distinct MedRecNo as medical_record_number, EncounterNo as encounter_number,
+	       EncntrStartDate as encounter_start_date, EncntrEndDate as encounter_end_date,
+	       EnrolleeName as patient_name,
+	       BirthDate as patient_birth_date, d.DocId as doc_id, DocDateTime as document_date,
+	       d.CreateDateTime as documnet_create_date, ModifyDateTime as document_modify_date,
+	       DocTypeName as doc_type_name, DocTypeDesc as doc_type_description,
+	       (Select RTRIM(LabelString) From DocLabels AS dl WHERE dl.DocId = d.DocId) as doc_label
+	FROM Documents as d with (NOLOCK)
+	  INNER JOIN DocTypes as dt with (NOLOCK) ON d.DocType = dt.DocType
+	  INNER JOIN DocsOwners as do with (NOLOCK) on d.DocId = do.DocId
+	  INNER JOIN Encounters as e with (NOLOCK) on do.OwnerId = e.EncntrOwnerId
+	  INNER JOIN MedicalRecords AS mr with (NOLOCK) ON e.MedRecOwnerId = mr.MedRecOwnerId
+	  INNER JOIN Enrollees AS enr with (NOLOCK) ON mr.EnrolleeOwnerId = enr.EnrolleeOwnerId
+	  LEFT OUTER JOIN Supplements as s with (NOLOCK) on d.DocId = s.DocId
+	  LEFT OUTER JOIN Deficiencies as def with (NOLOCK) on d.DocId = def.DocId
+	-- WHERE d.DocId in (  )
+	WHERE s.DocId IS NULL AND def.DocId IS NULL
+	  AND (Select top 1 FileExtension From FileFormats as ff Inner Join Objects as obj on ff.FileFmtId = obj.FileFmtId Where obj.DocId = d.DocId) != 'XML'
+	  AND DocTypeName in ()    
+	  AND ModifyDateTime >= '1/1/2006 12:00:00 AM' AND ModifyDateTime < '7/1/2006 12:00:00 AM'
+	  -- AND MR.OrgOwnerId = ''
+	  -- AND EncntrStartDate < 'xx/xx/2013 12:00:00'
+	GROUP BY MedRecNo, EncounterNo, EncntrStartDate, EnrolleeName, BirthDate, d.DocId, DocDateTime,
+	       d.CreateDateTime, ModifyDateTime, DocTypeName, DocTypeDesc, EncntrEndDate
+	Order By EncounterNo
+
+snippet dsd
+	SELECT Distinct MedRecNo as medical_record_number, EncounterNo as encounter_number,
+	       EncntrStartDate as encounter_start_date, EncntrEndDate as encounter_end_date,
+	       EnrolleeName as patient_name,
+	       BirthDate as patient_birth_date, d.DocId as doc_id, DocDateTime as document_date,
+	       d.CreateDateTime as documnet_create_date, ModifyDateTime as document_modify_date,
+	       DocTypeName as doc_type_name, DocTypeDesc as doc_type_description,
+	       (Select RTRIM(LabelString) From DocLabels AS dl WHERE dl.DocId = d.DocId) as doc_label
+	FROM Documents as d with (NOLOCK)
+	  INNER JOIN DocTypes as dt with (NOLOCK) ON d.DocType = dt.DocType
+	  INNER JOIN DocsOwners as do with (NOLOCK) on d.DocId = do.DocId
+	  INNER JOIN Encounters as e with (NOLOCK) on do.OwnerId = e.EncntrOwnerId
+	  INNER JOIN MedicalRecords AS mr with (NOLOCK) ON e.MedRecOwnerId = mr.MedRecOwnerId
+	  INNER JOIN Enrollees AS enr with (NOLOCK) ON mr.EnrolleeOwnerId = enr.EnrolleeOwnerId
+	  LEFT OUTER JOIN Supplements as s with (NOLOCK) on d.DocId = s.DocId
+	  LEFT OUTER JOIN Deficiencies as def with (NOLOCK) on d.DocId = def.DocId
+	-- WHERE d.DocId in (  )
+	WHERE ( (def.DocId IS NULL AND s.DocId IS NOT NULL) OR ( s.DocId is NULL AND (Select top 1 FileExtension From FileFormats as ff Inner Join Objects as obj on ff.FileFmtId = obj.FileFmtId Where obj.DocId = d.DocId) = 'XML') )
+	  AND DocTypeName in ()    
+	  AND ModifyDateTime >= '1/1/2006 12:00:00 AM' AND ModifyDateTime < '7/1/2006 12:00:00 AM'
+	  -- AND MR.OrgOwnerId = ''
+	  -- AND EncntrStartDate < 'xx/xx/2013 12:00:00'
+	GROUP BY MedRecNo, EncounterNo, EncntrStartDate, EnrolleeName, BirthDate, d.DocId, DocDateTime,
+	       d.CreateDateTime, ModifyDateTime, DocTypeName, DocTypeDesc, EncntrEndDate
+	Order By EncounterNo
+
+snippet dgd
+	SELECT Distinct ot.OwnerTypeName as folder, '' as medical_record_number, '' as encounter_number,
+	       '' as encounter_start_date, '' as encounter_end_date, '' as patient_name,
+	       '' as patient_birth_date, d.DocId as doc_id, DocDateTime as document_date,
+	       d.CreateDateTime as documnet_create_date, ModifyDateTime as document_modify_date,
+	       DocTypeName as doc_type_name, DocTypeDesc as doc_type_description, o.OwnerId as owner_id,
+	       (Select RTRIM(LabelString) From DocLabels AS dl WHERE dl.DocId = d.DocId) as doc_label
+	FROM Documents as d with (NOLOCK)
+	  INNER JOIN DocTypes as dt with (NOLOCK) ON d.DocType = dt.DocType
+	  INNER JOIN DocsOwners as do with (NOLOCK) on d.DocId = do.DocId
+	  INNER JOIN Owners AS o with (NOLOCK) ON do.OwnerId = o.OwnerId
+	  INNER JOIN OwnerTypes AS ot with (NOLOCK) ON o.OwnerType = ot.OwnerType
+	  LEFT OUTER JOIN Supplements as s with (NOLOCK) on d.DocId = s.DocId
+	  LEFT OUTER JOIN Deficiencies as def with (NOLOCK) on d.DocId = def.DocId  
+	-- WHERE d.DocId in (  )
+	WHERE s.DocId IS NULL AND def.DocId IS NULL
+	  AND (Select top 1 FileExtension From FileFormats as ff Inner Join Objects as obj on ff.FileFmtId = obj.FileFmtId Where obj.DocId = d.DocId) != 'XML'
+	  AND ot.OwnerTypeName not in ( 'ENCOUNTER', 'MEDREC' )
+	  -- AND DocTypeName in (  )
+	  AND ModifyDateTime >= '9/27/2013 12:00:00 AM' AND ModifyDateTime < '10/10/2013 12:00:00 AM'
+	GROUP BY d.DocId, DocDateTime, d.CreateDateTime, ModifyDateTime, DocTypeName, DocTypeDesc, ot.OwnerTypeName, o.OwnerId
+	Order By d.DocId
+
+snippet sw
+	WHERE ( (def.DocId IS NULL AND s.DocId IS NOT NULL) OR ( s.DocId is NULL AND (Select top 1 FileExtension From FileFormats as ff Inner Join Objects as obj on ff.FileFmtId = obj.FileFmtId Where obj.DocId = d.DocId) = 'XML') )
+
 snippet do
 	INNER JOIN DocsOwners AS do ON d.DocId = do.DocId
 
