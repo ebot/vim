@@ -46,10 +46,12 @@ snippet sdc
 snippet ded
 	SELECT Distinct HospCode + RegionCode as hhrr, OrgName as facility_name,
 				 MedRecNo as medical_record_number, EncounterNo as encounter_number,
-				 EncntrStartDate as encounter_start_date, EncntrEndDate as encounter_end_date,
-				 EnrolleeName as patient_name, BirthDate as patient_birth_date, d.DocId as doc_id,
-				 DocDateTime as document_date, d.CreateDateTime as document_create_date,
-				 ModifyDateTime as document_modify_date, DocTypeName as doc_type_name,
+				 EncntrStartDate as encounter_start_date,
+				 EncntrEndDate as encounter_end_date, CorpId as corp_id,
+				 EnrolleeName as patient_name, BirthDate as patient_birth_date,
+				 d.DocId as doc_id, DocDateTime as document_date,
+				 d.CreateDateTime as document_create_date, 
+				 ModifyDateTime as document_modify_date,DocTypeName as doc_type_name,
 				 DocTypeDesc as doc_type_description, e.FinClass as financial_class
 	FROM Documents as d with (NOLOCK)
 		INNER JOIN DocTypes as dt with (NOLOCK) ON d.DocType = dt.DocType
@@ -67,12 +69,13 @@ snippet ded
 		-- AND MR.OrgOwnerId = ''
 		-- AND d.DocId in (  )
 	GROUP BY HospCode, RegionCode, OrgName, MedRecNo, EncounterNo, EncntrStartDate,
-					 EncntrEndDate, EnrolleeName, BirthDate, d.DocId, DocDateTime,
+					 EncntrEndDate, CorpId, EnrolleeName, BirthDate, d.DocId, DocDateTime,
 					 d.CreateDateTime, ModifyDateTime, DocTypeName, DocTypeDesc, e.FinClass
 	UNION
 	SELECT Distinct HospCode + RegionCode as hhrr, OrgName as facility_name,
 				 MedRecNo as medical_record_number, NULL as encounter_number,
-				 NULL as encounter_start_date, NULL as encounter_end_date, EnrolleeName as patient_name,
+				 NULL as encounter_start_date, NULL as encounter_end_date,
+				 CorpId as corp_id, EnrolleeName as patient_name,
 				 BirthDate as patient_birth_date, d.DocId as doc_id, DocDateTime as document_date,
 				 d.CreateDateTime as document_create_date, ModifyDateTime as document_modify_date,
 				 DocTypeName as doc_type_name, DocTypeDesc as doc_type_description, NULL as financial_class
@@ -92,16 +95,41 @@ snippet ded
 		-- AND d.DocId in (  )
 	GROUP BY HospCode, RegionCode, OrgName, MedRecNo, EnrolleeName, BirthDate,
 					 d.DocId, DocDateTime, d.CreateDateTime, ModifyDateTime, DocTypeName,
+					 DocTypeDesc, CorpId
+	UNION
+	SELECT Distinct NULL as hhrr, NULL as facility_name,
+				 NULL as medical_record_number, NULL as encounter_number,
+				 NULL as encounter_start_date, NULL as encounter_end_date,
+				 CorpId as corp_id, EnrolleeName as patient_name,
+				 BirthDate as patient_birth_date, d.DocId as doc_id, DocDateTime as document_date,
+				 d.CreateDateTime as document_create_date, ModifyDateTime as document_modify_date,
+				 DocTypeName as doc_type_name, DocTypeDesc as doc_type_description, NULL as financial_class
+	FROM Documents as d with (NOLOCK)
+		INNER JOIN DocTypes as dt with (NOLOCK) ON d.DocType = dt.DocType
+		INNER JOIN DocsOwners as do with (NOLOCK) on d.DocId = do.DocId
+		INNER JOIN Enrollees AS enr with (NOLOCK) ON do.OwnerId = enr.EnrolleeOwnerId
+		LEFT OUTER JOIN Supplements as s with (NOLOCK) on d.DocId = s.DocId
+		LEFT OUTER JOIN Deficiencies as def with (NOLOCK) on d.DocId = def.DocId
+	WHERE s.DocId IS NULL AND def.DocId IS NULL
+		AND (Select top 1 FileExtension From FileFormats as ff Inner Join Objects as obj on ff.FileFmtId = obj.FileFmtId Where obj.DocId = d.DocId) != 'XML'
+		AND DocTypeName in ( )
+		AND ModifyDateTime >= '01/01/2014 12:00:00 AM' AND ModifyDateTime < '03/01/2014 12:00:00 AM'
+		-- AND MR.OrgOwnerId = ''
+		-- AND d.DocId in (  )
+	GROUP BY HospCode, RegionCode, CorpId, EnrolleeName, BirthDate,
+					 d.DocId, DocDateTime, d.CreateDateTime, ModifyDateTime, DocTypeName,
 					 DocTypeDesc
 	Order By d.DocId
 
 snippet dxd
 	SELECT Distinct HospCode + RegionCode as hhrr, OrgName as facility_name,
 				 MedRecNo as medical_record_number, EncounterNo as encounter_number,
-				 EncntrStartDate as encounter_start_date, EncntrEndDate as encounter_end_date,
-				 EnrolleeName as patient_name, BirthDate as patient_birth_date, d.DocId as doc_id,
-				 DocDateTime as document_date, d.CreateDateTime as document_create_date,
-				 ModifyDateTime as document_modify_date, DocTypeName as doc_type_name,
+				 EncntrStartDate as encounter_start_date,
+				 EncntrEndDate as encounter_end_date, CorpId as corp_id,
+				 EnrolleeName as patient_name, BirthDate as patient_birth_date,
+				 d.DocId as doc_id, DocDateTime as document_date,
+				 d.CreateDateTime as document_create_date, 
+				 ModifyDateTime as document_modify_date,DocTypeName as doc_type_name,
 				 DocTypeDesc as doc_type_description, e.FinClass as financial_class
 	FROM Documents as d with (NOLOCK)
 		INNER JOIN DocTypes as dt with (NOLOCK) ON d.DocType = dt.DocType
@@ -118,11 +146,11 @@ snippet dxd
 		-- AND MR.OrgOwnerId = ''
 		-- AND d.DocId in (  )
 	GROUP BY HospCode, RegionCode, OrgName, MedRecNo, EncounterNo, EncntrStartDate,
-					 EncntrEndDate, EnrolleeName, BirthDate, d.DocId, DocDateTime,
+					 EncntrEndDate, CorpId, EnrolleeName, BirthDate, d.DocId, DocDateTime,
 					 d.CreateDateTime, ModifyDateTime, DocTypeName, DocTypeDesc, e.FinClass
 	UNION
 	SELECT Distinct HospCode + RegionCode as hhrr, OrgName as facility_name,
-				 MedRecNo as medical_record_number, NULL as encounter_number,
+				 MedRecNo as medical_record_number, NULL as encounter_number, CorpId as corp_id,
 				 NULL as encounter_start_date, NULL as encounter_end_date, EnrolleeName as patient_name,
 				 BirthDate as patient_birth_date, d.DocId as doc_id, DocDateTime as document_date,
 				 d.CreateDateTime as document_create_date, ModifyDateTime as document_modify_date,
@@ -140,7 +168,29 @@ snippet dxd
 		AND ModifyDateTime >= '01/01/2014 12:00:00 AM' AND ModifyDateTime < '03/01/2014 12:00:00 AM'
 		-- AND MR.OrgOwnerId = ''
 		-- AND d.DocId in (  )
-	GROUP BY HospCode, RegionCode, OrgName,MedRecNo, EnrolleeName, BirthDate,
+	GROUP BY HospCode, RegionCode, OrgName, MedRecNo, EnrolleeName, BirthDate,
+					 d.DocId, DocDateTime, d.CreateDateTime, ModifyDateTime, DocTypeName,
+					 DocTypeDesc, CorpId
+	UNION
+	SELECT Distinct NULL as hhrr, NULL as facility_name,
+				 NULL as medical_record_number, NULL as encounter_number,
+				 NULL as encounter_start_date, NULL as encounter_end_date,
+				 CorpId as corp_id, EnrolleeName as patient_name,
+				 BirthDate as patient_birth_date, d.DocId as doc_id, DocDateTime as document_date,
+				 d.CreateDateTime as document_create_date, ModifyDateTime as document_modify_date,
+				 DocTypeName as doc_type_name, DocTypeDesc as doc_type_description, NULL as financial_class
+	FROM Documents as d with (NOLOCK)
+		INNER JOIN DocTypes as dt with (NOLOCK) ON d.DocType = dt.DocType
+		INNER JOIN DocsOwners as do with (NOLOCK) on d.DocId = do.DocId
+		INNER JOIN Enrollees AS enr with (NOLOCK) ON do.OwnerId = enr.EnrolleeOwnerId
+		LEFT OUTER JOIN Supplements as s with (NOLOCK) on d.DocId = s.DocId
+		LEFT OUTER JOIN Deficiencies as def with (NOLOCK) on d.DocId = def.DocId
+	WHERE ( (def.DocId IS NULL AND s.DocId IS NOT NULL) OR ( s.DocId is NULL AND (Select top 1 FileExtension From FileFormats as ff Inner Join Objects as obj on ff.FileFmtId = obj.FileFmtId Where obj.DocId = d.DocId) = 'XML') )  
+		AND DocTypeName in ( )
+		AND ModifyDateTime >= '01/01/2014 12:00:00 AM' AND ModifyDateTime < '03/01/2014 12:00:00 AM'
+		-- AND MR.OrgOwnerId = ''
+		-- AND d.DocId in (  )
+	GROUP BY HospCode, RegionCode, CorpId, EnrolleeName, BirthDate,
 					 d.DocId, DocDateTime, d.CreateDateTime, ModifyDateTime, DocTypeName,
 					 DocTypeDesc
 	Order By d.DocId
@@ -162,7 +212,7 @@ snippet dgd
 	-- WHERE d.DocId in (  )
 	WHERE s.DocId IS NULL AND def.DocId IS NULL
 	  AND (Select top 1 FileExtension From FileFormats as ff Inner Join Objects as obj on ff.FileFmtId = obj.FileFmtId Where obj.DocId = d.DocId) != 'XML'
-	  AND ot.OwnerTypeName not in ( 'ENCOUNTER', 'MEDREC' )
+	  AND ot.OwnerTypeName not in ( 'ENCOUNTER', 'MEDREC', 'ENROLLEE' )
 	  -- AND DocTypeName in (  )
 	  AND ModifyDateTime >= '9/27/2013 12:00:00 AM' AND ModifyDateTime < '10/10/2013 12:00:00 AM'
 	GROUP BY d.DocId, DocDateTime, d.CreateDateTime, ModifyDateTime, DocTypeName, DocTypeDesc, ot.OwnerTypeName, o.OwnerId
@@ -191,4 +241,3 @@ snippet obj
 
 snippet org
 	INNER JOIN Organizations as org ON mr.OrgOwnerId = org.OrgOwnerId
-
