@@ -42,6 +42,8 @@ i''€@7€kb€kb€kb'
 let @c=':%s/^  \d* - //g
 :%s/ - .*\n/'', ''/g
 i''€@7€kb€kb€kb'
+let @d=':%s/\n/'', ''/g
+i''€@7€kb€kb€kb€kb€kb€kbvdV'
 
 " Color, text, and display settings
 " colorscheme wombat
