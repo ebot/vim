@@ -45,6 +45,9 @@ i''€@7€kb€kb€kb'
 let @d=':%s/\n/'', ''/g
 i''€@7€kb€kb€kb€kb€kb€kbvdV'
 
+" <Ctrl-l> redraws the screen and removes any search highlighting.
+nnoremap <silent> <C-l> :nohl<CR><C-l>
+
 " Color, text, and display settings
 " colorscheme wombat
 colorscheme solarized
