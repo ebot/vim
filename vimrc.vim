@@ -5,6 +5,7 @@ if has("gui_macvim")
   let macvim_hig_shift_movement = 1
   set backupdir=~/.vim/backups " Where backups will go.
   set directory=~/.vim/tmp     " Where temporary files will go.
+  set undodir=~/.vim/undo      " Where undo files will go.
   set transparency=5           " Set transparency
   set guioptions=aAce          " Make sure experimental mode is on in the MacVim Advanced options.
 elseif has("win32")
@@ -13,6 +14,7 @@ elseif has("win32")
   "behave mswin
   set backupdir=~/vimfiles/backups " Where backups will go.
   set directory=~/vimfiles/tmp     " Where temporary files will go.
+  set undodir=~/vimfiles/undo      " Where undo files will go.
 endif
 set backup                     " Enable creation of backup files
 
